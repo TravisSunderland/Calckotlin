@@ -6,11 +6,7 @@ import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 import org.mariuszgromada.math.mxparser.Expression
 import java.lang.Exception
-import android.R.id.button1
-import android.text.Layout
-import android.widget.LinearLayout
 import android.widget.TextView
-import kotlin.math.absoluteValue
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +17,9 @@ class MainActivity : AppCompatActivity() {
     private var calculated = false
     private var needNewEnter = true
     private var secondAct = false
-    private var RadButton = true
-    private var RadFunc = ""
-    private var MemRes = ""
+    private var radButton = true
+    private var radFunc = ""
+    private var memRes = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,76 +72,76 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val Mc = findViewById(R.id.tvMc) as? TextView
-        val MPlus = findViewById(R.id.tvMPlus) as? TextView
-        val MMinus = findViewById(R.id.tvMMinus) as? TextView
-        val Mr = findViewById(R.id.tvMr) as? TextView
+        val mc = findViewById(R.id.tvMc) as? TextView
+        val mPlus = findViewById(R.id.tvMPlus) as? TextView
+        val mMinus = findViewById(R.id.tvMMinus) as? TextView
+        val mr = findViewById(R.id.tvMr) as? TextView
 
-        Mc?.setOnClickListener { MemRes = ""}
-        MPlus?.setOnClickListener { MemRes += "+"+tvResult.text.toString()
+        mc?.setOnClickListener { memRes = ""}
+        mPlus?.setOnClickListener { memRes += "+"+tvResult.text.toString()
             needNewEnter = true}
-        MMinus?.setOnClickListener { MemRes += "-"+tvResult.text.toString()
+        mMinus?.setOnClickListener { memRes += "-"+tvResult.text.toString()
             needNewEnter = true}
-        Mr?.setOnClickListener {
-            tvExpression.text = "mr: "+MemRes+"=";
-            checkNonsInExtension(MemRes);
-            val expressionMem = Expression(MemRes)
+        mr?.setOnClickListener {
+            tvExpression.text = "mr: "+memRes+"=";
+            checkNonsInExtension(memRes);
+            val expressionMem = Expression(memRes)
             tvResult.text =expressionMem.calculate().toString()
             calculated = true
         }
 
 
 
-        val RightBracket = findViewById(R.id.tvRightBracket) as? TextView
-        RightBracket?.setOnClickListener { appendOperationOnExpression("", ")",false)}
-        val LeftBracket = findViewById(R.id.tvLeftBracket) as? TextView
-        LeftBracket?.setOnClickListener { appendOperationOnExpression("", "(",false)}
+        val rightBracket = findViewById(R.id.tvRightBracket) as? TextView
+        rightBracket?.setOnClickListener { appendOperationOnExpression("", ")",false)}
+        val leftBracket = findViewById(R.id.tvLeftBracket) as? TextView
+        leftBracket?.setOnClickListener { appendOperationOnExpression("", "(",false)}
 
         val xPowTwo = findViewById(R.id.tvxPowTwo) as? TextView
         xPowTwo?.setOnClickListener { appendOnResult("", "^2",false,true)}
-        val XPowThree = findViewById(R.id.tvXPowThree) as? TextView
-        XPowThree?.setOnClickListener { appendOnResult("", "^3",false,true)}
-        val XPowY = findViewById(R.id.tvXPowY) as? TextView
-        XPowY?.setOnClickListener {
+        val xPowThree = findViewById(R.id.tvXPowThree) as? TextView
+        xPowThree?.setOnClickListener { appendOnResult("", "^3",false,true)}
+        val xPowY = findViewById(R.id.tvXPowY) as? TextView
+        xPowY?.setOnClickListener {
             checkEmptyExtension(true)
             appendOperationOnExpression("", "^",true)}
 
-        val OneDivX = findViewById(R.id.tvOneDivX) as? TextView
-        OneDivX?.setOnClickListener { appendOnResult("(1/", ")",false,true)}
-        val TwoSquareRoot = findViewById(R.id.tvTwoSquareRoot) as? TextView
-        TwoSquareRoot?.setOnClickListener { appendOnResult("sqrt(", ")",false,true)}
-        val ThreeSquareRoot = findViewById(R.id.tvThreeSquareRoot) as? TextView
-        ThreeSquareRoot?.setOnClickListener { appendOnResult("(", ")^(1/3)",false,true)}
-        val YSquareRoot = findViewById(R.id.tvYSquareRoot) as? TextView
-        YSquareRoot?.setOnClickListener { appendOperationOnExpression("(", ")^1/(",true)}
-        val persent = findViewById(R.id.tvPersent) as? TextView
-        persent?.setOnClickListener { appendOnResult("", "/100",false,true)}
+        val oneDivX = findViewById(R.id.tvOneDivX) as? TextView
+        oneDivX?.setOnClickListener { appendOnResult("(1/", ")",false,true)}
+        val twoSquareRoot = findViewById(R.id.tvTwoSquareRoot) as? TextView
+        twoSquareRoot?.setOnClickListener { appendOnResult("sqrt(", ")",false,true)}
+        val threeSquareRoot = findViewById(R.id.tvThreeSquareRoot) as? TextView
+        threeSquareRoot?.setOnClickListener { appendOnResult("(", ")^(1/3)",false,true)}
+        val ySquareRoot = findViewById(R.id.tvYSquareRoot) as? TextView
+        ySquareRoot?.setOnClickListener { appendOperationOnExpression("(", ")^1/(",true)}
+        val percent = findViewById(R.id.tvPersent) as? TextView
+        percent?.setOnClickListener { appendOnResult("", "/100",false,true)}
         val rand = findViewById(R.id.tvRand) as? TextView
         rand?.setOnClickListener {
             tvResult.text = ""
             appendOnExpression( Math.random().toString() )}
 
-        val ModuleX = findViewById(R.id.tvModuleX) as? TextView
-        ModuleX?.setOnClickListener { appendOnResult("", "!",false,true) }
+        val moduleX = findViewById(R.id.tvModuleX) as? TextView
+        moduleX?.setOnClickListener { appendOnResult("", "!",false,true) }
 
-        val E = findViewById(R.id.tvE) as? TextView
-        E?.setOnClickListener { appendOnResult("e", "",false,true)}
+        val e = findViewById(R.id.tvE) as? TextView
+        e?.setOnClickListener { appendOnResult("e", "",false,true)}
 
         val pi = findViewById(R.id.tvPi) as? TextView
         pi?.setOnClickListener { appendOnExpression(Math.PI.toString())}
-        val EE = findViewById(R.id.tvEE) as? TextView
-        EE?.setOnClickListener { appendOnResult("10^", "",false,true)}
-        val Rad = findViewById(R.id.tvRad) as? TextView
+        val ee = findViewById(R.id.tvEE) as? TextView
+        ee?.setOnClickListener { appendOnResult("10^", "",false,true)}
+        val rad = findViewById(R.id.tvRad) as? TextView
 
-        Rad?.setOnClickListener {
-            if (RadButton) {
+        rad?.setOnClickListener {
+            if (radButton) {
                 tvRad.text = "Deg"
-                RadFunc = "rad"
-                RadButton = false
+                radFunc = "rad"
+                radButton = false
             } else {
                 tvRad.text = "Rad"
-                RadFunc = ""
-                RadButton = true
+                radFunc = ""
+                radButton = true
             }
         }
 
@@ -181,19 +177,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val EPowX = findViewById(R.id.tvEPowX) as? TextView
-        val TenPowX = findViewById(R.id.tv10PowX) as? TextView
-        val Ln = findViewById(R.id.tvLn) as? TextView
-        val LogTen = findViewById(R.id.tvLogTen) as? TextView
-        val Sin = findViewById(R.id.tvSin) as? TextView
-        val Cos = findViewById(R.id.tvCos) as? TextView
-        val Tan = findViewById(R.id.tvTan) as? TextView
-        val Sinh = findViewById(R.id.tvSinh) as? TextView
-        val Cosh = findViewById(R.id.tvCosh) as? TextView
-        val Tanh = findViewById(R.id.tvTanh) as? TextView
+        val ePowX = findViewById(R.id.tvEPowX) as? TextView
+        val tenPowX = findViewById(R.id.tv10PowX) as? TextView
+        val ln = findViewById(R.id.tvLn) as? TextView
+        val logTen = findViewById(R.id.tvLogTen) as? TextView
+        val sin = findViewById(R.id.tvSin) as? TextView
+        val cos = findViewById(R.id.tvCos) as? TextView
+        val tan = findViewById(R.id.tvTan) as? TextView
+        val sinH = findViewById(R.id.tvSinh) as? TextView
+        val cosH = findViewById(R.id.tvCosh) as? TextView
+        val tanH = findViewById(R.id.tvTanh) as? TextView
 
 
-        EPowX?.setOnClickListener {
+        ePowX?.setOnClickListener {
             if (secondAct){
                 checkEmptyExtension(true)
                 appendOperationOnExpression("","^", true)}
@@ -201,56 +197,56 @@ class MainActivity : AppCompatActivity() {
                 appendOnResult("e^", "", false, true)
             }
         }
-        TenPowX?.setOnClickListener {
+        tenPowX?.setOnClickListener {
             if (secondAct)
                 appendOnResult("2^", "",false,true)
             else
                 appendOnResult("10^", "",false,true)
         }
-        Ln?.setOnClickListener {
+        ln?.setOnClickListener {
             if (secondAct) {
                 checkEmptyExtension(false)
                 appendOnExpression("log")}
             else
                 appendOnResult("ln(", ")",false,true)
         }
-        LogTen?.setOnClickListener {
+        logTen?.setOnClickListener {
             if (secondAct)
                 appendOnResult("log2(", ")",false ,true)
             else
                 appendOnResult("log10(", ")",false,true)
         }
-        Sin?.setOnClickListener {
+        sin?.setOnClickListener {
             if (secondAct)
                 appendOnResult("asin(", ")",false,true)
             else
-                appendOnResult("sin("+RadFunc +"(", "))",false,true)
+                appendOnResult("sin("+radFunc +"(", "))",false,true)
         }
-        Cos?.setOnClickListener {
+        cos?.setOnClickListener {
             if (secondAct)
                 appendOnResult("acos(", ")",false,true)
             else
-                appendOnResult("cos("+RadFunc +"(", "))",false,true)}
-        Tan?.setOnClickListener {
+                appendOnResult("cos("+radFunc +"(", "))",false,true)}
+        tan?.setOnClickListener {
             if (secondAct)
                 appendOnResult("atan(", ")",false,true)
             else
-                appendOnResult("tan("+RadFunc +"(", "))",false,true)}
-        Sinh?.setOnClickListener {
+                appendOnResult("tan("+radFunc +"(", "))",false,true)}
+        sinH?.setOnClickListener {
             if (secondAct)
                 appendOnResult("asinh(", ")",false,true)
             else
-                appendOnResult("sinh("+RadFunc +"(", "))",false,true)}
-        Cosh?.setOnClickListener {
+                appendOnResult("sinh("+radFunc +"(", "))",false,true)}
+        cosH?.setOnClickListener {
             if (secondAct)
                 appendOnResult("acosh(", ")",false,true)
             else
-                appendOnResult("cosh("+RadFunc +"(", "))",false,true)}
-        Tanh?.setOnClickListener {
+                appendOnResult("cosh("+radFunc +"(", "))",false,true)}
+        tanH?.setOnClickListener {
             if (secondAct)
                 appendOnResult("atanh(", ")",false,true)
             else
-                appendOnResult("tanh("+RadFunc +"(", "))",false,true)}
+                appendOnResult("tanh("+radFunc +"(", "))",false,true)}
 
 
         tvAC.setOnClickListener {
@@ -273,9 +269,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkEmptyExtension(setZero: Boolean)
     {
         val tvExpressionString = tvExpression.text.toString()
-        if (setZero && tvExpressionString.equals(""))
+        if (setZero && tvExpressionString =="")
             tvExpression.text = "0"
-        else if(tvExpressionString.equals("0"))
+        else if(tvExpressionString == "0")
             tvExpression.text = ""
 
     }
@@ -289,12 +285,12 @@ class MainActivity : AppCompatActivity() {
         else return Result.toString()
     }
 
-    private fun checkNonsInExtension(StringToCheck: String) : String
-    {   val StringToCheck1 = StringToCheck.replace("--", "+", false)
-        val StringToCheck2 = StringToCheck1.replace("+-", "-", false)
-        val StringToCheck3 = StringToCheck2.replace("-+", "-", false)
-        val StringToCheck4 = StringToCheck3.replace("++", "+", false)
-        return deleteLustOperation(StringToCheck4)
+    private fun checkNonsInExtension(stringToCheck: String) : String
+    {   val stringToCheck1 = stringToCheck.replace("--", "+", false)
+        val stringToCheck2 = stringToCheck1.replace("+-", "-", false)
+        val stringToCheck3 = stringToCheck2.replace("-+", "-", false)
+        val stringToCheck4 = stringToCheck3.replace("++", "+", false)
+        return deleteLustOperation(stringToCheck4)
     }
     private fun calculateResult()
     {
@@ -318,7 +314,7 @@ class MainActivity : AppCompatActivity() {
             val result = checkResult(expression.calculate())
             tvResult.text = result
             calculated = true
-            tvExpression.append(" = " + result)
+            tvExpression.append(" = $result")
 
         }catch (e:Exception){
             Log.d("Exception",""+ e.printStackTrace())
@@ -328,7 +324,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun appendOnResult(stringBefore: String, stringAfter: String, calculateThis: Boolean, calculateAll: Boolean){
         var tvResultString = tvResult.text.toString()
-        if (tvResultString.equals(""))
+        if (tvResultString == "")
             tvResultString = "0"
         val stringToDo = stringBefore + tvResultString + stringAfter
         if(calculateThis) {
@@ -344,7 +340,7 @@ class MainActivity : AppCompatActivity() {
     private fun appendOnExpression(string: String){
 
         val tvResultString = tvResult.text.toString();
-        if (string == "0" && (calculated || needNewEnter || tvResultString.equals("") || tvResultString.equals("0") )) {
+        if (string == "0" && (calculated || needNewEnter || tvResultString == "" || tvResultString == "0")) {
             return
         }
         tvAC.text = "C"
@@ -356,7 +352,7 @@ class MainActivity : AppCompatActivity() {
         }
         else
         {
-            if (tvResultString.equals("") || tvResultString.equals("0") || needNewEnter) {
+            if (tvResultString == "" || tvResultString == "0" || needNewEnter) {
                     tvResult.text = string
                     needNewEnter = false
             }
