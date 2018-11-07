@@ -159,7 +159,6 @@ class CalcModel () {
             tvExpressionString = "0"
         else if(tvExpressionString == "0")
             tvExpressionString = ""
-
     }
 
 
