@@ -6,10 +6,11 @@ import org.mariuszgromada.math.mxparser.Expression
 import java.lang.Exception
 
 
-class calcModel {
+class CalcModel () {
 
     private var calculated = false
     private var needNewEnter = true
+    private var secondAct = false
     private var radButton = true
     private var radFunc = ""
     private var memRes = ""
@@ -18,23 +19,28 @@ class calcModel {
     private var tvResultString = ""
 
 
-    fun calcModel(tvExpressionString: String, tvResultString: String) {
-        this.tvExpressionString = tvExpressionString
-        this.tvResultString = tvResultString
-    }
-
     fun handleButtonPressed(string: String) {
         when (string) {
-            "0" -> appendOnExpression("0")
-            "1" -> appendOnExpression("1")
-            "2" -> appendOnExpression("2")
-            "3" -> appendOnExpression("3")
-            "4" -> appendOnExpression("4")
-            "5" -> appendOnExpression("5")
-            "6" -> appendOnExpression("6")
-            "7" -> appendOnExpression("7")
-            "8" -> appendOnExpression("8")
-            "9" -> appendOnExpression("9")
+            "0" -> {checkEmptyExtension(false)
+                appendOnExpression("0")}
+            "1" -> {checkEmptyExtension(false)
+                appendOnExpression("1")}
+            "2" -> {checkEmptyExtension(false)
+                appendOnExpression("2")}
+            "3" -> {checkEmptyExtension(false)
+                appendOnExpression("3")}
+            "4" -> {checkEmptyExtension(false)
+                appendOnExpression("4")}
+            "5" -> {checkEmptyExtension(false)
+                appendOnExpression("5")}
+            "6" -> {checkEmptyExtension(false)
+                appendOnExpression("6")}
+            "7" -> {checkEmptyExtension(false)
+                appendOnExpression("7")}
+            "8" -> {checkEmptyExtension(false)
+                appendOnExpression("8")}
+            "9" -> {checkEmptyExtension(false)
+                appendOnExpression("9")}
             "+" -> appendOperationOnExpression("", "+",true)
             "-" -> appendOperationOnExpression("", "-",true)
             "/" -> appendOperationOnExpression("", "/",true)
@@ -64,17 +70,17 @@ class calcModel {
                 checkEmptyExtension(true)
                 appendOperationOnExpression("", "^",true)}
             "1/x" -> appendOnResult("(1/", ")",false,true)
-            "2sqr" -> appendOnResult("sqrt(", ")",false,true)
-            "3sqr" -> appendOnResult("(", ")^(1/3)",false,true)
-            "Ysqr" -> appendOperationOnExpression("(", ")^1/(",true)
+            "2sqrt" -> appendOnResult("sqrt(", ")",false,true)
+            "3sqrt" -> appendOnResult("(", ")^(1/3)",false,true)
+            "Ysqrt" -> appendOperationOnExpression("(", ")^1/(",true)
             "%" -> appendOnResult("", "/100",false,true)
             "rnd" -> {
                 tvResultString = ""
                 appendOnExpression( Math.random().toString() )}
             "x!" -> appendOnResult("", "!",false,true)
             "e" -> appendOnResult("e", "",false,true)
-            "pi" -> appendOnExpression(Math.PI.toString())
-            "ee" -> appendOnResult("10^", "",false,true)
+            "Pi" -> appendOnExpression(Math.PI.toString())
+            "EE" -> appendOnResult("10^", "",false,true)
             "rad" -> {
                 if (radButton) {
                     radFunc = "rad"
@@ -127,6 +133,26 @@ class calcModel {
 
     }
 
+    fun getExpressionString(): String{
+        return tvExpressionString
+    }
+
+    fun getResultString(): String{
+        return tvResultString
+    }
+
+    fun getSecondAct(): Boolean{
+        return secondAct
+    }
+
+    fun getRad(): Boolean {
+        return radButton
+    }
+
+    fun setRad(RadButton: Boolean){
+        radButton = RadButton
+    }
+
     private fun checkEmptyExtension(setZero: Boolean)
     {
         if (setZero && tvExpressionString =="")
@@ -140,9 +166,9 @@ class calcModel {
     private fun checkResult(Result: Double) : String
     {
         val intRes = Result.toInt()
-        if (intRes.toDouble() == Result)
-            return intRes.toString()
-        else return Result.toString()
+        return if (intRes.toDouble() == Result)
+            intRes.toString()
+        else Result.toString()
     }
 
     private fun checkNonsInExtension(stringToCheck: String) : String
@@ -238,5 +264,9 @@ class calcModel {
         calculated = false
         tvExpressionString = expressionString + stringAfter
         tvResultString = ""
+    }
+
+    fun setSecondAct(secondAct: Boolean) {
+        this.secondAct = secondAct
     }
 }

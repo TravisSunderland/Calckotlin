@@ -1,5 +1,6 @@
 package com.example.travis.calckotlin
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,64 +12,74 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
-    private val KEY_Result = "0";
-    private val KEY_Expression = "1";
+    private var calcModel: CalcModel = CalcModel()
 
-    private var calculated = false
-    private var needNewEnter = true
-    private var secondAct = false
-    private var radButton = true
-    private var radFunc = ""
-    private var memRes = ""
-
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
         setContentView(R.layout.activity_main)
 
-        tvResult.text = savedInstanceState?.getCharSequence(KEY_Result, "0");
-        tvExpression.text = savedInstanceState?.getCharSequence(KEY_Expression, "0");
+        //val tvExpressionText = savedInstanceState?.getCharSequence(KEY_Expression, "0").toString();
+        //val calcModel = CalcModel()
+        if (lastNonConfigurationInstance != null)
+            calcModel = lastNonConfigurationInstance as CalcModel
+
+        //tvResult.text = tvResultText
+        //tvExpression.text = tvExpressionText
 
 
-        tv1.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("1") }
-        tv2.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("2") }
-        tv3.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("3") }
-        tv4.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("4") }
-        tv5.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("5") }
-        tv6.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("6") }
-        tv7.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("7") }
-        tv8.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("8") }
-        tv9.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("9") }
-        tvZero.setOnClickListener {checkEmptyExtension(false)
-            appendOnExpression("0") }
-        tvDot.setOnClickListener {
-            val tvResultText = tvResult.text.toString();
-            if (tvResultText.indexOf('.') == -1 || calculated) {
-                if (tvResultText == ""|| calculated)
-                    appendOnExpression("0.")
-                else
-                    appendOnExpression(".")
-            }
-        }
+        tv1.setOnClickListener {calcModel.handleButtonPressed("1")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv2.setOnClickListener {calcModel.handleButtonPressed("2")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv3.setOnClickListener {calcModel.handleButtonPressed("3")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv4.setOnClickListener {calcModel.handleButtonPressed("4")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv5.setOnClickListener {calcModel.handleButtonPressed("5")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv6.setOnClickListener {calcModel.handleButtonPressed("6")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv7.setOnClickListener {calcModel.handleButtonPressed("7")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv8.setOnClickListener {calcModel.handleButtonPressed("8")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tv9.setOnClickListener {calcModel.handleButtonPressed("9")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tvZero.setOnClickListener {calcModel.handleButtonPressed("0")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tvDot.setOnClickListener {calcModel.handleButtonPressed(".")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
-        tvPlus.setOnClickListener { appendOperationOnExpression("", "+",true) }
-        tvMinus.setOnClickListener { appendOperationOnExpression("", "-",true) }
-        tvMult.setOnClickListener { appendOperationOnExpression("", "*",true) }
-        tvDiv.setOnClickListener { appendOperationOnExpression("", "/",true) }
+        tvPlus.setOnClickListener { calcModel.handleButtonPressed("+")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        tvMinus.setOnClickListener { calcModel.handleButtonPressed("-")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString() }
+        tvMult.setOnClickListener { calcModel.handleButtonPressed("*")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString() }
+        tvDiv.setOnClickListener { calcModel.handleButtonPressed("/")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString() }
 
-        tvPM.setOnClickListener {
-            val expression = Expression("-1*"+tvResult.text.toString())
-            tvResult.text =expression.calculate().toString()
+        tvPM.setOnClickListener {calcModel.handleButtonPressed("+-")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
 
 
@@ -77,77 +88,99 @@ class MainActivity : AppCompatActivity() {
         val mMinus = findViewById(R.id.tvMMinus) as? TextView
         val mr = findViewById(R.id.tvMr) as? TextView
 
-        mc?.setOnClickListener { memRes = ""}
-        mPlus?.setOnClickListener { memRes += "+"+tvResult.text.toString()
-            needNewEnter = true}
-        mMinus?.setOnClickListener { memRes += "-"+tvResult.text.toString()
-            needNewEnter = true}
-        mr?.setOnClickListener {
-            tvExpression.text = "mr: "+memRes+"=";
-            checkNonsInExtension(memRes);
-            val expressionMem = Expression(memRes)
-            tvResult.text =expressionMem.calculate().toString()
-            calculated = true
-        }
+        mc?.setOnClickListener { calcModel.handleButtonPressed("mc")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        mPlus?.setOnClickListener { calcModel.handleButtonPressed("m+")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        mMinus?.setOnClickListener { calcModel.handleButtonPressed("m-")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
+        mr?.setOnClickListener {calcModel.handleButtonPressed("mr")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString() }
 
 
 
         val rightBracket = findViewById(R.id.tvRightBracket) as? TextView
-        rightBracket?.setOnClickListener { appendOperationOnExpression("", ")",false)}
+        rightBracket?.setOnClickListener { calcModel.handleButtonPressed(")")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val leftBracket = findViewById(R.id.tvLeftBracket) as? TextView
-        leftBracket?.setOnClickListener { appendOperationOnExpression("", "(",false)}
+        leftBracket?.setOnClickListener { calcModel.handleButtonPressed("(")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
         val xPowTwo = findViewById(R.id.tvxPowTwo) as? TextView
-        xPowTwo?.setOnClickListener { appendOnResult("", "^2",false,true)}
+        xPowTwo?.setOnClickListener { calcModel.handleButtonPressed("x^2")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val xPowThree = findViewById(R.id.tvXPowThree) as? TextView
-        xPowThree?.setOnClickListener { appendOnResult("", "^3",false,true)}
+        xPowThree?.setOnClickListener { calcModel.handleButtonPressed("x^3")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val xPowY = findViewById(R.id.tvXPowY) as? TextView
-        xPowY?.setOnClickListener {
-            checkEmptyExtension(true)
-            appendOperationOnExpression("", "^",true)}
+        xPowY?.setOnClickListener {calcModel.handleButtonPressed("x^y")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
         val oneDivX = findViewById(R.id.tvOneDivX) as? TextView
-        oneDivX?.setOnClickListener { appendOnResult("(1/", ")",false,true)}
+        oneDivX?.setOnClickListener { calcModel.handleButtonPressed("1/x")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val twoSquareRoot = findViewById(R.id.tvTwoSquareRoot) as? TextView
-        twoSquareRoot?.setOnClickListener { appendOnResult("sqrt(", ")",false,true)}
+        twoSquareRoot?.setOnClickListener { calcModel.handleButtonPressed("2sqrt")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val threeSquareRoot = findViewById(R.id.tvThreeSquareRoot) as? TextView
-        threeSquareRoot?.setOnClickListener { appendOnResult("(", ")^(1/3)",false,true)}
+        threeSquareRoot?.setOnClickListener { calcModel.handleButtonPressed("3sqrt")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val ySquareRoot = findViewById(R.id.tvYSquareRoot) as? TextView
-        ySquareRoot?.setOnClickListener { appendOperationOnExpression("(", ")^1/(",true)}
+        ySquareRoot?.setOnClickListener { calcModel.handleButtonPressed("Ysqrt")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val percent = findViewById(R.id.tvPersent) as? TextView
-        percent?.setOnClickListener { appendOnResult("", "/100",false,true)}
+        percent?.setOnClickListener { calcModel.handleButtonPressed("%")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val rand = findViewById(R.id.tvRand) as? TextView
-        rand?.setOnClickListener {
-            tvResult.text = ""
-            appendOnExpression( Math.random().toString() )}
+        rand?.setOnClickListener {calcModel.handleButtonPressed("rnd")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
         val moduleX = findViewById(R.id.tvModuleX) as? TextView
-        moduleX?.setOnClickListener { appendOnResult("", "!",false,true) }
+        moduleX?.setOnClickListener { calcModel.handleButtonPressed("x!")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString() }
 
         val e = findViewById(R.id.tvE) as? TextView
-        e?.setOnClickListener { appendOnResult("e", "",false,true)}
+        e?.setOnClickListener { calcModel.handleButtonPressed("e")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
         val pi = findViewById(R.id.tvPi) as? TextView
-        pi?.setOnClickListener { appendOnExpression(Math.PI.toString())}
+        pi?.setOnClickListener { calcModel.handleButtonPressed("Pi")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val ee = findViewById(R.id.tvEE) as? TextView
-        ee?.setOnClickListener { appendOnResult("10^", "",false,true)}
+        ee?.setOnClickListener { calcModel.handleButtonPressed("EE")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         val rad = findViewById(R.id.tvRad) as? TextView
 
-        rad?.setOnClickListener {
-            if (radButton) {
+        rad?.setOnClickListener {calcModel.handleButtonPressed("rad")
+            if (calcModel.getRad()) {
                 tvRad.text = "Deg"
-                radFunc = "rad"
-                radButton = false
             } else {
                 tvRad.text = "Rad"
-                radFunc = ""
-                radButton = true
             }
         }
 
         val second = findViewById(R.id.tv2nd) as? TextView
         second?.setOnClickListener {
-            if (secondAct)
+            if (calcModel.getSecondAct())
             {
                 tvEPowX.text = "eˣ"
                 tv10PowX.text = "10ˣ"
@@ -159,7 +192,7 @@ class MainActivity : AppCompatActivity() {
                 tvSinh.text = "sinh"
                 tvCosh.text = "cosh"
                 tvTanh.text = "tanh"
-                secondAct = false
+                calcModel.setSecondAct(false)
             }
             else
             {
@@ -173,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 tvSinh.text = "sinh⁻¹"
                 tvCosh.text = "cosh⁻¹"
                 tvTanh.text = "tanh⁻¹"
-                secondAct = true
+                calcModel.setSecondAct(true)
             }
         }
 
@@ -190,202 +223,103 @@ class MainActivity : AppCompatActivity() {
 
 
         ePowX?.setOnClickListener {
-            if (secondAct){
-                checkEmptyExtension(true)
-                appendOperationOnExpression("","^", true)}
-            else {
-                appendOnResult("e^", "", false, true)
-            }
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("^")}
+            else
+                calcModel.handleButtonPressed("e^")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
         tenPowX?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("2^", "",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("2^")}
             else
-                appendOnResult("10^", "",false,true)
+                calcModel.handleButtonPressed("10^")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
         ln?.setOnClickListener {
-            if (secondAct) {
-                checkEmptyExtension(false)
-                appendOnExpression("log")}
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("log")}
             else
-                appendOnResult("ln(", ")",false,true)
+                calcModel.handleButtonPressed("ln")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
         logTen?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("log2(", ")",false ,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("log2")}
             else
-                appendOnResult("log10(", ")",false,true)
+                calcModel.handleButtonPressed("log10")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
         sin?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("asin(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("asin")}
             else
-                appendOnResult("sin("+radFunc +"(", "))",false,true)
+                calcModel.handleButtonPressed("sin")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
         cos?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("acos(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("acos")}
             else
-                appendOnResult("cos("+radFunc +"(", "))",false,true)}
+                calcModel.handleButtonPressed("cos")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         tan?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("atan(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("atan")}
             else
-                appendOnResult("tan("+radFunc +"(", "))",false,true)}
+                calcModel.handleButtonPressed("tan")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         sinH?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("asinh(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("asinh")}
             else
-                appendOnResult("sinh("+radFunc +"(", "))",false,true)}
+                calcModel.handleButtonPressed("sinh")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         cosH?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("acosh(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("acosh")}
             else
-                appendOnResult("cosh("+radFunc +"(", "))",false,true)}
+                calcModel.handleButtonPressed("cosh")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
         tanH?.setOnClickListener {
-            if (secondAct)
-                appendOnResult("atanh(", ")",false,true)
+            if (calcModel.getSecondAct()){
+                calcModel.handleButtonPressed("atanh")}
             else
-                appendOnResult("tanh("+radFunc +"(", "))",false,true)}
+                calcModel.handleButtonPressed("tanh")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
 
-        tvAC.setOnClickListener {
-
-            if (calculated) {
-                tvExpression.text = ""
-                tvResult.text = ""
-            } else {
-                tvResult.text = ""
-            }}
+        tvAC.setOnClickListener {calcModel.handleButtonPressed("AC")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()}
 
 
-
-        tvEquals.setOnClickListener {
-            calculateResult();
+        tvEquals.setOnClickListener {calcModel.handleButtonPressed("=")
+            tvResult.text = calcModel.getResultString()
+            tvExpression.text = calcModel.getExpressionString()
         }
 
     }
 
-    private fun checkEmptyExtension(setZero: Boolean)
-    {
-        val tvExpressionString = tvExpression.text.toString()
-        if (setZero && tvExpressionString =="")
-            tvExpression.text = "0"
-        else if(tvExpressionString == "0")
-            tvExpression.text = ""
-
-    }
 
 
-    private fun checkResult(Result: Double) : String
-    {
-        val intRes = Result.toInt()
-        if (intRes.toDouble() == Result)
-            return intRes.toString()
-        else return Result.toString()
-    }
-
-    private fun checkNonsInExtension(stringToCheck: String) : String
-    {   val stringToCheck1 = stringToCheck.replace("--", "+", false)
-        val stringToCheck2 = stringToCheck1.replace("+-", "-", false)
-        val stringToCheck3 = stringToCheck2.replace("-+", "-", false)
-        val stringToCheck4 = stringToCheck3.replace("++", "+", false)
-        return deleteLustOperation(stringToCheck4)
-    }
-    private fun calculateResult()
-    {
-
-        var toCalculate = ""
-        try {
-            tvAC.text = "AC"
-            if (!calculated)
-            {
-                tvExpression.append(tvResult.text.toString())
-                toCalculate = checkNonsInExtension(tvExpression.text.toString())
-                tvExpression.text = toCalculate
-            }
-            else
-            {
-                tvExpression.text = tvResult.text.toString();
-                toCalculate = checkNonsInExtension(tvResult.text.toString())
-                tvResult.text = toCalculate
-            }
-            val expression = Expression(toCalculate)
-            val result = checkResult(expression.calculate())
-            tvResult.text = result
-            calculated = true
-            tvExpression.append(" = $result")
-
-        }catch (e:Exception){
-            Log.d("Exception",""+ e.printStackTrace())
-
-        }
-    }
-
-    private fun appendOnResult(stringBefore: String, stringAfter: String, calculateThis: Boolean, calculateAll: Boolean){
-        var tvResultString = tvResult.text.toString()
-        if (tvResultString == "")
-            tvResultString = "0"
-        val stringToDo = stringBefore + tvResultString + stringAfter
-        if(calculateThis) {
-            val stringToDo = checkNonsInExtension(stringToDo);
-            val expression = Expression(stringToDo)
-            tvResult.text = expression.calculate().toString()
-        }
-        else
-            tvResult.text = stringToDo
-        if (calculateAll)
-            calculateResult()
-    }
-    private fun appendOnExpression(string: String){
-
-        val tvResultString = tvResult.text.toString();
-        if (string == "0" && (calculated || needNewEnter || tvResultString == "" || tvResultString == "0")) {
-            return
-        }
-        tvAC.text = "C"
-        if (calculated) {
-            tvExpression.text = ""
-            tvResult.text = string
-            calculated = false
-
-        }
-        else
-        {
-            if (tvResultString == "" || tvResultString == "0" || needNewEnter) {
-                    tvResult.text = string
-                    needNewEnter = false
-            }
-            else
-                tvResult.append(string)
-        }
-    }
-
-    private fun deleteLustOperation(ExpressionString: String) : String
-    {
-        if( ExpressionString.endsWith("+") || ExpressionString.endsWith("-")|| ExpressionString.endsWith("/")|| ExpressionString.endsWith("*")|| ExpressionString.endsWith("."))
-             return ExpressionString.substring(0,ExpressionString.length-1)
-        else
-            return ExpressionString
-    }
-
-    private fun appendOperationOnExpression(stringBefore: String, stringAfter: String, isOperation: Boolean){
-        if (calculated)
-            tvExpression.text = ""
-
-        var expressionString = tvExpression.text.toString() + stringBefore+  tvResult.text ;
-        if (isOperation)
-            expressionString = deleteLustOperation(expressionString)
-
-        calculated = false
-        tvExpression.text = expressionString + stringAfter
-        tvResult.text = ""
+    override fun onRetainCustomNonConfigurationInstance(): Any {
+        return calcModel
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putCharSequence(KEY_Result, tvResult.text)
-        outState.putCharSequence(KEY_Expression, tvExpression.text)
+        //outState.putBoolean(keySecondAct, secondAct)
     }
 }
