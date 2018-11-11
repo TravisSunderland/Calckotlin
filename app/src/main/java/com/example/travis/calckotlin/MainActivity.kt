@@ -11,7 +11,13 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
-    private var calcModel: CalcModel = CalcModel()
+
+    companion object {
+        const val CALC_MODEL_KEY = "calc_model_key"
+    }
+
+    private lateinit var calcModel: CalcModel
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,14 +25,12 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        //val tvExpressionText = savedInstanceState?.getCharSequence(KEY_Expression, "0").toString();
-        //val calcModel = CalcModel()
-        if (lastNonConfigurationInstance != null) {
-            calcModel = lastNonConfigurationInstance as CalcModel
-        }
+        val savedCalcModel = savedInstanceState?.getSerializable(MainActivity.CALC_MODEL_KEY) as? CalcModel
 
-        //tvResult.text = tvResultText
-        //tvExpression.text = tvExpressionText
+        calcModel = savedCalcModel ?: CalcModel()
+
+        tvResult.text = calcModel.getResultString()
+        tvExpression.text = calcModel.getExpressionString()
 
         tv1?.setOnClickListener {
             calcModel.handleButtonPressed("1")
@@ -414,6 +418,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        //outState.putBoolean(keySecondAct, secondAct)
+        outState.putSerializable(CALC_MODEL_KEY, calcModel)
     }
 }

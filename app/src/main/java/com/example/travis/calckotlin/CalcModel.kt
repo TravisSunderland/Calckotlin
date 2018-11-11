@@ -3,10 +3,11 @@ package com.example.travis.calckotlin
 import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 import org.mariuszgromada.math.mxparser.Expression
+import java.io.Serializable
 import java.lang.Exception
 
 
-class CalcModel() {
+class CalcModel : Serializable {
 
     private var calculated = false
     private var needNewEnter = true
