@@ -17,6 +17,11 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="TextStyle">
+        <item name="android:background">@color/background</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
     <style name="NumberButtonStyle">
         <item name="android:textAlignment">center</item>
         <item name="android:layout_weight">1</item>

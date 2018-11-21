@@ -5,4 +5,6 @@
     <color name="colorAccent">#D81B60</color>
     <color name="actionButton">#F57C00</color>
     <color name="numberButton">@color/colorAccent</color>
+    <color name="text">#FFFFFF</color>
+    <color name="background">#2d2b2e</color>
 </resources>

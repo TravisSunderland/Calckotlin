@@ -1,7 +1,6 @@
 package com.example.travis.calckotlin
 
 import android.util.Log
-import kotlinx.android.synthetic.main.activity_main.*
 import org.mariuszgromada.math.mxparser.Expression
 import java.io.Serializable
 import java.lang.Exception
@@ -11,6 +10,7 @@ class CalcModel : Serializable {
 
     private var calculated = false
     private var needNewEnter = true
+    private var needCalculate = false
     private var secondAct = false
     private var radButton = true
     private var radFunc = ""
@@ -74,7 +74,11 @@ class CalcModel : Serializable {
             "*" -> {
                 appendOperationOnExpression("", "*", true)
             }
-            "=" -> calculateResult()
+            "=" -> {
+                if (needCalculate) {
+                    calculateResult()
+                }
+            }
             "+-" -> {
                 val expression = Expression("-1*$tvResultString")
                 tvResultString = expression.calculate().toString()
@@ -121,7 +125,7 @@ class CalcModel : Serializable {
                 appendOnResult("(", ")^(1/3)", false, true)
             }
             "Ysqrt" -> {
-                appendOperationOnExpression("(", ")^1/(", true)
+                appendOperationOnExpression("(", ")^(1/y)", true)
             }
             "%" -> {
                 appendOnResult("", "/100", false, true)
@@ -152,8 +156,8 @@ class CalcModel : Serializable {
                 }
             }
             "y^x" -> {
-                checkEmptyExtension(true)
-                appendOperationOnExpression("", "^", true)
+                checkEmptyExtension(false)
+                appendOperationOnExpression("y^", "", true)
             }
             "e^" -> {
                 appendOnResult("e^", "", false, true)
@@ -176,6 +180,9 @@ class CalcModel : Serializable {
             }
             "log10" -> {
                 appendOnResult("log10(", ")", false, true)
+            }
+            "logy" -> {
+                appendOperationOnExpression("logy(", ")", false)
             }
             "asin" -> {
                 appendOnResult("asin(", ")", false, true)
@@ -249,12 +256,12 @@ class CalcModel : Serializable {
         return secondAct
     }
 
-    fun getRad(): Boolean {
-        return radButton
+    fun getACText(): String {
+        return tvACText
     }
 
-    fun setRad(RadButton: Boolean) {
-        radButton = RadButton
+    fun getRad(): Boolean {
+        return radButton
     }
 
     private fun checkEmptyExtension(setZero: Boolean) {
@@ -289,20 +296,29 @@ class CalcModel : Serializable {
 
         try {
             tvACText = "AC"
-            if (!calculated) {
-                tvExpressionString += tvResultString
-                toCalculate = checkNonsInExtension(tvExpressionString)
-                tvExpressionString = toCalculate
-            } else {
-                tvExpressionString = tvResultString
-                toCalculate = checkNonsInExtension(tvResultString)
-                tvResultString = toCalculate
+
+            if (tvExpressionString.contains("y")) {
+                tvExpressionString = tvExpressionString.replace("y", tvResultString)
+                toCalculate = tvExpressionString
             }
+            else {
+                if (!calculated) {
+                    tvExpressionString += tvResultString
+                    toCalculate = checkNonsInExtension(tvExpressionString)
+                    tvExpressionString = toCalculate
+                } else {
+                    tvExpressionString = tvResultString
+                    toCalculate = checkNonsInExtension(tvResultString)
+                    tvResultString = toCalculate
+                }
+            }
+
             val expression = Expression(toCalculate)
             val result = checkResult(expression.calculate())
             tvResultString = result
             calculated = true
             tvExpressionString += " = $result"
+            needCalculate = false
         } catch (e: Exception) {
             Log.d("Exception", "" + e.printStackTrace())
         }
@@ -351,6 +367,8 @@ class CalcModel : Serializable {
                 tvResultString += string
             }
         }
+
+        needCalculate = true
     }
 
     private fun deleteLustOperation(ExpressionString: String): String {
